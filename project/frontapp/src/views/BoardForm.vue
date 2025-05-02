@@ -1,9 +1,10 @@
 <template>
   <div class="container">
     <form @submit.prevent>
-      <label for="no">No.</label>
-      <input type="text" id="no" :value="boardInfo.id" readonly />
-
+      <div v-if="this.searchNo > 0"> 
+        <label for="no">No.</label>
+        <input type="text" id="no" :value="boardInfo.id" readonly />
+      </div>
       <label for="title">제목</label>
       <input type="text" id="title" v-model="boardInfo.title"/>
 
@@ -16,10 +17,10 @@
         style="height: 200px"
         v-model="boardInfo.content"
       ></textarea>
-
-      <label for="regdate">작성일자</label>
-      <input type="text" :value="boardInfo.created_date" readonly />
-
+      <div v-if="this.searchNo > 0"> 
+        <label for="regdate">작성일자</label>
+        <input type="text" v-bind:value="dateFormat" readonly />
+      </div>
       <button
         type="button"
         class="btn btn-xs btn-info"
@@ -44,10 +45,22 @@ export default{
       this.fetchInfo();
     }
   },
+  computed:{
+    dateFormat(){
+      // 날짜 포맷
+      const date = new Date(this.boardInfo.created_date);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+  },
   methods:{
     async fetchInfo(){
       let board = await axios.get(`http://localhost:3000/board/${this.searchNo}`);
-      this.boardInfo = board.data
+      this.boardInfo = board.data[0]
       console.log(this.boardInfo)
     },
     async saveBoard(id){

@@ -18,17 +18,30 @@
           <td>{{ board.created_date }}</td>
           <td>{{ board.comment }}</td>
         </tr>
+        <tr>
+            <td colspan="6" class="text-center">
+              <button class="btn btn-xs btn-info" @click="goToAddForm()">
+                등록
+              </button>
+            </td>
+          </tr>
       </tbody>
     </table>
+    <div>
+      <CommentComp :bid="boardInfo.id"/>
+    </div>
   </div>
 </template>
 <script>
 import axios from 'axios';
+import CommentComp from "@/components/CommentComp.vue";
 
 export default{
+  components : {CommentComp},
   data(){
     return{
-      boards: []
+      boards: [],
+      boardInfo:{}
     }
   },
   created(){
@@ -45,7 +58,10 @@ export default{
     },
     getDateFormat(date){
       return this.$dateFormat(date);
-    } 
+    },
+    goToAddForm(){
+      this.$router.push({path:"/boardForm"});
+    }
   },
   mounted(){
   

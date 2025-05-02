@@ -36,6 +36,9 @@
               <button class="btn btn-xs btn-info" @click="goToListForm()">
                 목록
               </button>
+              <button class="btn btn-xs btn-info" @click="goToDelete(boardInfo.id)">
+                삭제
+              </button>
             </td>
           </tr>
         </tbody>
@@ -65,7 +68,7 @@ export default{
   methods:{
     async fetchInfo(){
       let board = await axios.get(`http://localhost:3000/board/${this.searchNo}`);
-      this.boardInfo = board.data
+      this.boardInfo = board.data[0]
     },
     async getCommentList(){
       let comment = await axios.get(`http://localhost:3000/comment`);
@@ -80,6 +83,12 @@ export default{
       this.$router.push({path:"/boardForm", query:{id:id}});
     },
     goToListForm(){
+      this.$router.push({path:"/boardList"});
+    },
+    async goToDelete(id){
+      const url = `http://localhost:3000/board/${id}`;
+      const result = await axios.delete(url);
+      alert("정상적으로 삭제되었습니다.");
       this.$router.push({path:"/boardList"});
     }
   },
