@@ -45,17 +45,31 @@
       </table>
     </div>
     <!-- 댓글 -->
+    <div>
+      <CommentComp :bid="boardInfo.id" @commentAdded="getCommentList"/>
+    </div>
     <div class="row">
-      <div v-for="comment in boardCommentList">{{ comment.content }}</div>
+      <div v-if="boardCommentList.length === 0">
+        <p>댓글이 없습니다.</p>
+      </div>
+      <div v-else>
+        <div v-for="(comment, idx) in boardCommentList" :key="idx" style="display: flex; align-items: center;">
+          <strong style="margin-right: 8px;">{{ comment.writer }}</strong>: {{ comment.content }}
+          <button class="btn btn-xs btn-danger" @click="deleteComment(comment.id)" style="margin-left: 10px;">삭제</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import axios from 'axios';
+import CommentComp from "@/components/CommentComp.vue";
 
 export default{
+  components : {CommentComp},
   data(){
     return{
+      searchNo: null,
       boardInfo: {},
       commentList: [],
       boardCommentList:[]
@@ -64,6 +78,7 @@ export default{
   created(){
     this.searchNo = this.$route.query.id;
     this.fetchInfo();
+    this.getCommentList();
   },
   methods:{
     async fetchInfo(){
@@ -71,13 +86,9 @@ export default{
       this.boardInfo = board.data[0]
     },
     async getCommentList(){
-      let comment = await axios.get(`http://localhost:3000/comment`);
-      this.commentList = comment.data
-      for(let i = 0; i < this.commentList.length; i++){
-        if(this.commentList[i].bid == this.searchNo){
-          this.boardCommentList.push(this.commentList[i]);
-        }
-      }
+      let comment = await axios.get(`http://localhost:3000/comment/${this.searchNo}`);
+
+      this.boardCommentList = comment.data;
     },  
     goToUpdateForm(id){
       this.$router.push({path:"/boardForm", query:{id:id}});
@@ -90,6 +101,18 @@ export default{
       const result = await axios.delete(url);
       alert("정상적으로 삭제되었습니다.");
       this.$router.push({path:"/boardList"});
+    },
+    async deleteComment(id) {
+      if (confirm("이 댓글을 삭제하시겠습니까?")) {
+        try {
+          await axios.delete(`http://localhost:3000/comment/${id}`);
+          alert("댓글이 삭제되었습니다.");
+          this.getCommentList();
+        } catch (err) {
+          console.error("댓글 삭제 실패:", err);
+          alert("댓글 삭제에 실패했습니다.");
+        }
+      }
     }
   },
   mounted(){

@@ -27,9 +27,6 @@
           </tr>
       </tbody>
     </table>
-    <div>
-      <CommentComp :bid="boardInfo.id"/>
-    </div>
   </div>
 </template>
 <script>

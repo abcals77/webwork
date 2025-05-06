@@ -28,6 +28,11 @@ const router = createRouter({
       name: 'boardForm',
       component: () => import('../views/BoardForm.vue')
     },
+    {
+      path: '/customerList',
+      name: 'customerList',
+      component: () => import('../views/CustomerList.vue')
+    },
   ],
 })
 

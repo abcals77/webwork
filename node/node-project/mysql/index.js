@@ -3,7 +3,8 @@
 const mysql = require("mysql2");
 const customer = require("./customerSql")
 const board = require("./boardSql")
-const sqlList = {customer : customer, board : board}
+const comment = require("./commentSql")
+const sqlList = {customer : customer, board : board, comment : comment}
 
 const conn = {
   // 필수
