@@ -59,12 +59,12 @@ export default{
   },
   methods:{
     async fetchInfo(){
-      let board = await axios.get(`http://localhost:3000/board/${this.searchNo}`);
+      let board = await axios.get(`/api/board/${this.searchNo}`);
       this.boardInfo = board.data[0]
       console.log(this.boardInfo)
     },
     async saveBoard(id){
-      const url = "http://localhost:3000/board";
+      const url = "/api/board";
       let param = {
         title: this.boardInfo.title,
         content: this.boardInfo.content,

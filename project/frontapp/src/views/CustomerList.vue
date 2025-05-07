@@ -38,7 +38,7 @@ export default {
   },
   async created() {
     try {
-      const res = await axios.get('http://localhost:3000/customer');
+      const res = await axios.get('/api/customer');
       this.customerList = res.data;
     } catch (err) {
       console.error("고객 목록 불러오기 실패:", err);

@@ -38,7 +38,7 @@ export default {
       };
 
       try {
-        const res = await axios.post("http://localhost:3000/comment", commentData);
+        const res = await axios.post("/api/comment", commentData);
         alert("댓글이 등록되었습니다.");
         
         // 초기화

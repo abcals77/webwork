@@ -82,11 +82,11 @@ export default{
   },
   methods:{
     async fetchInfo(){
-      let board = await axios.get(`http://localhost:3000/board/${this.searchNo}`);
+      let board = await axios.get(`/api/board/${this.searchNo}`);
       this.boardInfo = board.data[0]
     },
     async getCommentList(){
-      let comment = await axios.get(`http://localhost:3000/comment/${this.searchNo}`);
+      let comment = await axios.get(`/api/comment/${this.searchNo}`);
 
       this.boardCommentList = comment.data;
     },  
@@ -97,7 +97,7 @@ export default{
       this.$router.push({path:"/boardList"});
     },
     async goToDelete(id){
-      const url = `http://localhost:3000/board/${id}`;
+      const url = `/api/board/${id}`;
       const result = await axios.delete(url);
       alert("정상적으로 삭제되었습니다.");
       this.$router.push({path:"/boardList"});
@@ -105,7 +105,7 @@ export default{
     async deleteComment(id) {
       if (confirm("이 댓글을 삭제하시겠습니까?")) {
         try {
-          await axios.delete(`http://localhost:3000/comment/${id}`);
+          await axios.delete(`/api/comment/${id}`);
           alert("댓글이 삭제되었습니다.");
           this.getCommentList();
         } catch (err) {

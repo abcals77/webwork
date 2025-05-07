@@ -46,7 +46,7 @@ export default{
   },
   methods:{
     async fetchList(){
-      let result = await axios.get(`http://localhost:3000/board`);
+      let result = await axios.get(`/api/board`);
       this.boards = result.data;
     },
     goToDetail(id){
