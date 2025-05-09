@@ -19,14 +19,22 @@
           <td>{{ book.category }}</td>
         </tr>
         <tr>
-            <td colspan="6" class="text-center">
-              <button class="btn btn-xs btn-info" @click="">
-                등록
-              </button>
-            </td>
-          </tr>
+          <td colspan="6" class="text-center">
+            <button class="btn btn-xs btn-info" @click="goToAdd">
+              등록
+            </button>
+          </td>
+        </tr>
       </tbody>  
     </table>
+    <div class="text-center my-2">
+      <button class="btn btn-sm btn-outline-primary mx-1"
+        v-for="i in countInPages" :key="i"
+        :class="{ active: startPage + i - 1 === page.page }"
+        @click="moveToPage(startPage + i - 1)">
+        {{ startPage + i - 1 }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -35,7 +43,13 @@ import axios from 'axios';
 export default{
   data(){
     return{
-      books: []
+      books: [],
+      page: {
+      page: 1,
+      total: 0
+    },
+    count: 5,
+    defaultPages: 5
     }
   },
   created(){
@@ -43,8 +57,9 @@ export default{
   },
   methods:{
     async fetchList(){
-      let result = await axios.get(`/api/book`);
-      this.books = result.data;
+      let result = await axios.get(`/api/book?page=${this.page.page}&count=${this.count}`);
+      this.books = result.data.list;
+      this.page.total = result.data.total;
     },
     goToDetail(id){
       // query: ?id=1 param : boardInfo/1
@@ -53,13 +68,30 @@ export default{
     getDateFormat(date) {
       const d = new Date(date);
       return isNaN(d) ? "-" : d.toISOString().slice(0, 10);
+    },
+    goToAdd(){
+      // query: ?id=1 param : boardInfo/1
+      this.$router.push({path:"/bookUpdateForm"});
+    },
+    moveToPage(p) {
+      this.page.page = p;
+      this.fetchList();
     }
-    // goToAddForm(){
-    //   this.$router.push({path:"/boardForm"});
-    // }
   },
   mounted(){
   
+  },
+  computed: {
+    totalPage() {
+      return Math.floor(this.page.total / this.count) + ((this.page.total % this.count) === 0 ? 0 : 1);
+    },
+    startPage() {
+      return Math.floor((this.page.page - 1) / this.defaultPages) * this.defaultPages + 1;
+    },
+    countInPages() {
+      let remain = this.totalPage - (this.startPage - 1);
+      return remain < this.defaultPages ? remain : this.defaultPages;
+    }
   }
 }
 </script>

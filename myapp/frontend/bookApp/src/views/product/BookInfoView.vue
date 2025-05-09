@@ -8,7 +8,7 @@
             <td scope="col" class="text-center">{{ bookInfo.book_id }}</td>
             <th scope="col" class="text-center table-primary">출간일</th>
             <td scope="col" class="text-center">
-              {{ getDateFormat(bookInfo.created_date) }}
+              {{ getDateFormat(bookInfo.publish_date) }}
             </td>
             <th scope="col" class="text-center table-primary">저자</th>
             <td scope="col" class="text-center">{{ bookInfo.author }}</td>
@@ -39,15 +39,15 @@
           </tr>
           <tr>
             <td colspan="6" class="text-left" valign="top" height="200">
-              <img :src="bookInfo.cover_image" :alt="bookInfo.title" style="width: 150px; height: auto;"/>
+              <img :src="`/img/${bookInfo.cover_image}`" :alt="bookInfo.title" style="width: 500px; height: auto;" @error="setDefaultImage"/>
             </td>
           </tr>
           <tr>
             <td colspan="6" class="text-center">
-              <button class="btn btn-xs btn-info" @click="goToUpdateForm(bookInfo.book_id)">
+              <button class="btn btn-xs btn-info" style="margin-right : 10px;" @click="goToUpdateForm(bookInfo.book_id)">
                 수정
               </button>
-              <button class="btn btn-xs btn-info" @click="goToListForm()">
+              <button class="btn btn-xs btn-info" style="margin-right : 10px;" @click="goToListForm()">
                 목록
               </button>
               <button class="btn btn-xs btn-info" @click="goToDelete(bookInfo.book_id)">
@@ -95,6 +95,9 @@ export default{
     getDateFormat(date) {
       const d = new Date(date);
       return isNaN(d) ? "-" : d.toISOString().slice(0, 10);
+    },
+    setDefaultImage(event) {
+      event.target.src = '/img/기본이미지.jpg';  // 기본 이미지 경로
     }
   },
   mounted(){

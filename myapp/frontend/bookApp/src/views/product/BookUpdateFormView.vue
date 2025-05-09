@@ -3,30 +3,46 @@
     <form @submit.prevent>
       <div v-if="this.searchNo > 0"> 
         <label for="no">No.</label>
-        <input type="text" id="no" :value="bookInfo.id" readonly />
+        <input type="text" id="no" :value="bookInfo.book_id" readonly />
       </div>
-      <label for="title">제목</label>
+      <label for="isbn">ISBN 번호</label>
+      <input type="text" id="isbn" v-model="bookInfo.isbn"/>
+      <div>
+        <label for="publish_date">출간일</label>
+        <input type="date" id="publish_date" v-model="bookInfo.publish_date"/>
+      </div>
+      <label for="title">책 제목</label>
       <input type="text" id="title" v-model="bookInfo.title"/>
-
-      <label for="writer">작성자</label>
-      <input type="text" id="writer" v-model="bookInfo.writer"/>
-
-      <label for="content">내용</label>
+      <label for="writer">저자</label>
+      <input type="text" id="publisher" v-model="bookInfo.author"/>
+      <label for="publisher">출판사</label>
+      <input type="text" id="writer" v-model="bookInfo.publisher"/>
+      <label for="category">카테고리</label>
+      <input type="text" id="category" v-model="bookInfo.category"/>
+      <label for="content">책 소개</label>
       <textarea
         id="content"
         style="height: 200px"
-        v-model="bookInfo.content"
+        v-model="bookInfo.description"
       ></textarea>
       <div v-if="this.searchNo > 0"> 
-        <label for="regdate">작성일자</label>
+        <label for="regdate">등록일자</label>
         <input type="text" v-bind:value="dateFormat" readonly />
       </div>
       <button
         type="button"
         class="btn btn-xs btn-info"
-        @click="saveBook(bookInfo.id)"
+        style="margin-right : 10px;"
+        @click="saveBook(bookInfo.book_id)"
       >
         저장
+      </button>
+      <button
+        type="button"
+        class="btn btn-xs btn-info"
+        @click="goToBookInfo(bookInfo.book_id)"
+      >
+        취소
       </button>
     </form>
   </div>
@@ -48,7 +64,7 @@ export default{
   computed:{
     dateFormat(){
       // 날짜 포맷
-      const date = new Date(this.book.created_date);
+      const date = new Date(this.bookInfo.created_date);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
@@ -63,12 +79,20 @@ export default{
       this.bookInfo = book.data[0]
       console.log(this.bookInfo)
     },
+    goToBookInfo(id){
+      // query: ?id=1 param : boardInfo/1
+      this.$router.push({path:"/bookInfo", query:{id:id}});
+    },
     async saveBook(id){
       const url = "/api/book";
       let param = {
+        isbn: this.bookInfo.isbn,
+        publish_date : this.bookInfo.publish_date,
         title: this.bookInfo.title,
-        content: this.bookInfo.content,
-        writer: this.bookInfo.writer
+        author: this.bookInfo.author,
+        publisher: this.bookInfo.publisher,
+        category: this.bookInfo.category,
+        description: this.bookInfo.description
       };
       // 수정
       if(id>0){
